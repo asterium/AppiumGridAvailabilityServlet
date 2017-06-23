@@ -1,5 +1,7 @@
-package org.dimazay.selenium.grid.hub;
+package org.dimazay.selenium.grid.hub.util;
 
+import org.dimazay.selenium.grid.hub.dataadapters.CapabilityToBrowserDataAdapter;
+import org.dimazay.selenium.grid.hub.dataadapters.CapabilityToDeviceDataAdapter;
 import org.dimazay.selenium.grid.hub.models.BrowserData;
 import org.dimazay.selenium.grid.hub.models.DeviceData;
 import org.openqa.grid.internal.ProxySet;
@@ -14,16 +16,16 @@ import java.util.*;
  */
 public class RegistryBrowserDataExtractor {
 
-    private static final String DEVICE_NAME_CAPABILITY = "deviceName";
 
     private Registry registry;
-    private CapabilityToBrowserDataAdapter adapter;
-    private String deviceNameCapability;
+    private CapabilityToBrowserDataAdapter browserDataAdapter;
+    private CapabilityToDeviceDataAdapter deviceDataAdapter;
 
 
     public RegistryBrowserDataExtractor(Registry registry) {
         this.registry = registry;
-        adapter = new CapabilityToBrowserDataAdapter();
+        browserDataAdapter = new CapabilityToBrowserDataAdapter();
+        deviceDataAdapter = new CapabilityToDeviceDataAdapter();
     }
 
     public List<BrowserData> getListOfAvailableBrowsers(){
@@ -38,7 +40,7 @@ public class RegistryBrowserDataExtractor {
             String currentBrowserName = currentData.getBrowserName();
             if(buckets.containsKey(currentBrowserName)){
                 BrowserData existingData = buckets.get(currentBrowserName);
-                BrowserData mergedData = mergeResults(currentData, existingData);
+                BrowserData mergedData = mergeBrowserData(currentData, existingData);
                 buckets.put(currentBrowserName, mergedData);
             }
             else {
@@ -55,15 +57,13 @@ public class RegistryBrowserDataExtractor {
         for (RemoteProxy proxy : proxies){
             for(TestSlot testSlot : proxy.getTestSlots()){
                 Map<String, Object> testSlotCapabilities = testSlot.getCapabilities();
-                BrowserData browserData = adapter.extractBrowserDataFromCapabilities(testSlotCapabilities);
+                BrowserData browserData = browserDataAdapter.extractBrowserDataFromCapabilities(testSlotCapabilities);
+                DeviceData deviceData = deviceDataAdapter.extractDeviceDataFromCapabilities(testSlotCapabilities);
 
-                String deviceName = testSlotCapabilities.get(DEVICE_NAME_CAPABILITY).toString();
-                DeviceData deviceData  = new DeviceData(deviceName);
 
                 if(isTestSlotFree(testSlot)){
                     browserData.setFree(deviceData);
-                }else
-                {
+                } else {
                     browserData.setBusy(deviceData);
                 }
 
@@ -74,7 +74,7 @@ public class RegistryBrowserDataExtractor {
         return mappedBrowserData;
     }
 
-    private BrowserData mergeResults(BrowserData first, BrowserData second){
+    private BrowserData mergeBrowserData(BrowserData first, BrowserData second) {
         if(!first.getBrowserName().equals(second.getBrowserName())){
             throw new IllegalArgumentException("Could not merge browser data with different browser names");
         }

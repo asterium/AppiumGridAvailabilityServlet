@@ -6,6 +6,7 @@ package org.dimazay.selenium.grid.hub.models;
 public class BrowserData  implements Cloneable{
 
     private String browserName;
+    private String platform;
     private DeviceData busy = new DeviceData();
     private DeviceData free = new DeviceData();
 
@@ -37,6 +38,14 @@ public class BrowserData  implements Cloneable{
         this.free = free;
     }
 
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,17 +53,18 @@ public class BrowserData  implements Cloneable{
 
         BrowserData that = (BrowserData) o;
 
-        if (!browserName.equals(that.browserName)) return false;
-        if (!busy.equals(that.busy)) return false;
-        return free.equals(that.free);
-
+        if (browserName != null ? !browserName.equals(that.browserName) : that.browserName != null) return false;
+        if (platform != null ? !platform.equals(that.platform) : that.platform != null) return false;
+        if (busy != null ? !busy.equals(that.busy) : that.busy != null) return false;
+        return free != null ? free.equals(that.free) : that.free == null;
     }
 
     @Override
     public int hashCode() {
-        int result = browserName.hashCode();
-        result = 31 * result + busy.hashCode();
-        result = 31 * result + free.hashCode();
+        int result = browserName != null ? browserName.hashCode() : 0;
+        result = 31 * result + (platform != null ? platform.hashCode() : 0);
+        result = 31 * result + (busy != null ? busy.hashCode() : 0);
+        result = 31 * result + (free != null ? free.hashCode() : 0);
         return result;
     }
 
@@ -67,6 +77,7 @@ public class BrowserData  implements Cloneable{
         result.setBrowserName(this.getBrowserName());
         result.setBusy(newBusy);
         result.setFree(newFree);
+        result.setPlatform(this.getPlatform());
         return result;
     }
 }

@@ -1,4 +1,4 @@
-package org.dimazay.selenium.grid.hub;
+package org.dimazay.selenium.grid.hub.dataadapters;
 
 import org.dimazay.selenium.grid.hub.models.BrowserData;
 import org.openqa.selenium.remote.CapabilityType;
@@ -13,8 +13,9 @@ public class CapabilityToBrowserDataAdapter {
     public BrowserData extractBrowserDataFromCapabilities(Map<String, Object> capabilities){
         BrowserData result = new BrowserData();
         String browserName = capabilities.get(CapabilityType.BROWSER_NAME).toString();
+        String platform = capabilities.get(CapabilityType.PLATFORM).toString();
         result.setBrowserName(browserName);
-
+        result.setPlatform(platform);
         return result;
     }
 
