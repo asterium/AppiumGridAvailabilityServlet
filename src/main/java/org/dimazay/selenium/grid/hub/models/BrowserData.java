@@ -68,16 +68,4 @@ public class BrowserData  implements Cloneable{
         return result;
     }
 
-    @Override
-    public  BrowserData clone() {
-        BrowserData result = new BrowserData();
-        DeviceData newFree = getFree().clone();
-        DeviceData newBusy = getBusy().clone();
-
-        result.setBrowserName(this.getBrowserName());
-        result.setBusy(newBusy);
-        result.setFree(newFree);
-        result.setPlatform(this.getPlatform());
-        return result;
-    }
 }

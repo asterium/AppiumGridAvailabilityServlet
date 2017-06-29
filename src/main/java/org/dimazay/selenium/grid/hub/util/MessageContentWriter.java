@@ -1,27 +1,23 @@
 package org.dimazay.selenium.grid.hub.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.dimazay.selenium.grid.hub.DeviceAvailability;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by Dmytro_Zaitsev on 6/21/2017.
  */
-public class MessageBuilder {
+public class MessageContentWriter {
     private HttpServletResponse response;
-    private Logger log;
-    public MessageBuilder(HttpServletResponse response){
+
+    public MessageContentWriter(HttpServletResponse response) {
         this.response = response;
     }
 
-    public MessageBuilder(HttpServletResponse response, Logger log) {
-        this.response = response;
-        this.log = log;
-    }
 
     public void buildResponseMessage(Object data){
         response.setContentType("application/json");
@@ -38,8 +34,7 @@ public class MessageBuilder {
             writer.flush();
 
         } catch (IOException e) {
-            log.log(Level.WARNING, "failed to write response message");
-            e.printStackTrace();
+            DeviceAvailability.logger.log(Level.WARNING, "failed to write response message", e);
         }
     }
 }

@@ -57,11 +57,4 @@ public class DeviceData implements Cloneable{
         return result;
     }
 
-    @Override
-    protected DeviceData clone(){
-        DeviceData result = new DeviceData();
-        result.setCount(this.getCount());
-        result.setDeviceNames(new HashSet<String>(this.getDeviceNames()));
-        return result;
-    }
 }

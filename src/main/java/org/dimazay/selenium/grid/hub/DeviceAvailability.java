@@ -1,7 +1,7 @@
 package org.dimazay.selenium.grid.hub;
 
 import org.dimazay.selenium.grid.hub.models.BrowserData;
-import org.dimazay.selenium.grid.hub.util.MessageBuilder;
+import org.dimazay.selenium.grid.hub.util.MessageContentWriter;
 import org.dimazay.selenium.grid.hub.util.RegistryBrowserDataExtractor;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
@@ -20,11 +20,10 @@ import java.util.logging.Logger;
  */
 public class DeviceAvailability extends RegistryBasedServlet {
 
-    private static final String AVAILABILITY_REQUEST_PATH = "/available";
-    private final Logger log = Logger.getLogger(getClass().getName());
+    public static final Logger logger = Logger.getLogger(DeviceAvailability.class.getName());
 
     private RegistryBrowserDataExtractor dataExtractor;
-    private MessageBuilder messageBuilder;
+    private MessageContentWriter messageContentWriter;
 
     public DeviceAvailability() {
         this(null);
@@ -35,12 +34,13 @@ public class DeviceAvailability extends RegistryBasedServlet {
     }
 
     @Override
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             dataExtractor = new RegistryBrowserDataExtractor(getRegistry());
-        log.log(Level.INFO, "Request on availablity servlet");
-        messageBuilder = new MessageBuilder(response, log);
+        logger.log(Level.INFO, "Request on availablity servlet");
+        messageContentWriter = new MessageContentWriter(response);
         List<BrowserData> browserData = dataExtractor.getListOfAvailableBrowsers();
-            messageBuilder.buildResponseMessage(browserData);
+        messageContentWriter.buildResponseMessage(browserData);
 
     }
 }
