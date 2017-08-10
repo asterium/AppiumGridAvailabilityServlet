@@ -27,7 +27,7 @@
             <tr th:each="device : ${deviceList}">
                 <td data-title="Device Name" th:text="${device.name}">Nexus6</td>
                 <td data-title="Browser Type" th:text="${device.browserName}">AndroidPhone</td>
-                <td data-title="State" th:text="${device.isBusy}">True</td>
+                <td data-title="State" th:text="${device.isBusy?'Busy':'Idle'}">True</td>
                 <td data-title="Session id" th:text="${device.sessionId}"></td>
             </tr>
             </tbody>

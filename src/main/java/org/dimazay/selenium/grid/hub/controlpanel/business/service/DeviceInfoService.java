@@ -35,7 +35,7 @@ public class DeviceInfoService {
                 deviceInfo.setBrowserName(browserName);
                 deviceInfo.setName(deviceName);
 
-                deviceInfo.setBusy(isTestSlotFree(testSlot));
+                deviceInfo.setBusy(!isTestSlotFree(testSlot));
                 if(!isTestSlotFree(testSlot)){
                     ExternalSessionKey key = testSlot.getSession().getExternalKey();
                     deviceInfo.setSessionId(key.getKey());
