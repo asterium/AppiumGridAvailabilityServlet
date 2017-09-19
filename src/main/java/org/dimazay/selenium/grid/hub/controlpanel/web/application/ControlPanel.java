@@ -1,22 +1,17 @@
 package org.dimazay.selenium.grid.hub.controlpanel.web.application;
 
-import org.dimazay.selenium.grid.hub.controlpanel.business.models.DeviceInfo;
 import org.dimazay.selenium.grid.hub.controlpanel.business.service.DeviceInfoService;
+import org.dimazay.selenium.grid.hub.controlpanel.web.controller.ControlPanelController;
+import org.dimazay.selenium.grid.hub.controlpanel.web.controller.NotFoundController;
 import org.dimazay.selenium.grid.hub.deviceavailability.DeviceAvailability;
-import org.dimazay.selenium.grid.hub.deviceavailability.models.BrowserData;
-import org.dimazay.selenium.grid.hub.deviceavailability.util.MessageContentWriter;
-import org.dimazay.selenium.grid.hub.deviceavailability.util.RegistryBrowserDataExtractor;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.web.servlet.RegistryBasedServlet;
 import org.thymeleaf.ITemplateEngine;
-import org.thymeleaf.context.WebContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +23,7 @@ public class ControlPanel extends RegistryBasedServlet {
     public static final Logger logger = Logger.getLogger(DeviceAvailability.class.getName());
 
     private DeviceInfoService dataExtractor;
-    private AppiumControlPanelApplication appiumControlPanelApplication;
+    private AppiumControlPanelApplication application;
 
     public ControlPanel(){
         this(null);
@@ -41,16 +36,48 @@ public class ControlPanel extends RegistryBasedServlet {
     @Override
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        appiumControlPanelApplication = new AppiumControlPanelApplication(this.getServletContext());
-        dataExtractor = new DeviceInfoService(getRegistry());
+        application = new AppiumControlPanelApplication(getRegistry(), getServletContext());
         logger.log(Level.INFO, "Request on control panel servlet");
-        List<DeviceInfo> deviceList = dataExtractor.getListOfAvailableDevice();
-        logger.warning(getServletContext().getServletContextName());
-        ITemplateEngine templateEngine = appiumControlPanelApplication.getTemplateEngine();
-        WebContext ctx = new WebContext(request, response, getServletContext());
-        ctx.setVariable("deviceList", deviceList);
+        process(request, response);
+//        ControlPanelController controller = application.resolveControllerForRequest(request);
+//        ITemplateEngine templateEngine = application.getTemplateEngine();
+//        controller.process(request,response,getServletContext(),templateEngine,getRegistry());
+//        List<DeviceInfo> deviceList = dataExtractor.getListOfAvailableDevice();
+//        logger.warning(getServletContext().getServletContextName());
+//        ITemplateEngine templateEngine = application.getTemplateEngine();
+//        WebContext ctx = new WebContext(request, response, getServletContext());
+//        ctx.setVariable("deviceList", deviceList);
+//
+//        templateEngine.process("controlpanel", ctx, response.getWriter());
 
-        templateEngine.process("controlpanel", ctx, response.getWriter());
+    }
+
+
+    private void process(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException {
+        try {
+            ControlPanelController controller = this.application.resolveControllerForRequest(request);
+            if (controller == null) {
+                controller = new NotFoundController();
+            }
+
+            ITemplateEngine templateEngine = this.application.getTemplateEngine();
+            response.setContentType("text/html;charset=UTF-8");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setDateHeader("Expires", 0);
+
+            controller.process(
+                    request, response, getServletContext(), templateEngine, getRegistry());
+
+        } catch (Exception e) {
+            try {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            } catch (final IOException ignored) {
+                // Just ignore this
+            }
+            throw new ServletException(e);
+        }
 
     }
 }

@@ -1,5 +1,6 @@
 package org.dimazay.selenium.grid.hub.controlpanel.web.controller;
 
+import org.openqa.grid.internal.Registry;
 import org.thymeleaf.ITemplateEngine;
 
 import javax.servlet.ServletContext;
@@ -13,6 +14,6 @@ public interface ControlPanelController {
 
     public void process(
             HttpServletRequest request, HttpServletResponse response,
-            ServletContext servletContext, ITemplateEngine templateEngine)
+            ServletContext servletContext, ITemplateEngine templateEngine, Registry registry)
             throws Exception;
 }

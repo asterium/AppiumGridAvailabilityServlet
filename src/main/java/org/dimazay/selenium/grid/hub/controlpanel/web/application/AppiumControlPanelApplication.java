@@ -1,11 +1,13 @@
 package org.dimazay.selenium.grid.hub.controlpanel.web.application;
 
 import org.dimazay.selenium.grid.hub.controlpanel.web.controller.ControlPanelController;
+import org.dimazay.selenium.grid.hub.controlpanel.web.controller.HomeController;
+import org.dimazay.selenium.grid.hub.controlpanel.web.controller.SessionStateController;
+import org.openqa.grid.internal.Registry;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +19,17 @@ import java.util.Map;
  */
 public class AppiumControlPanelApplication {
 
-    private TemplateEngine templateEngine;
-    private Map<String, ControlPanelController> controllersByURL;
+    private static final String SERVLET_BASE_PATH = "/grid/admin/ControlPanel";
 
-    public AppiumControlPanelApplication(final ServletContext servletContext) {
+    private final TemplateEngine templateEngine;
+    private final Map<String, ControlPanelController> controllersByURL;
+    private final Registry gridRegistry;
+    private final ServletContext context;
+
+    public AppiumControlPanelApplication(final Registry registry, final ServletContext servletContext) {
+
+        gridRegistry = registry;
+        context = servletContext;
 
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
 
@@ -29,22 +38,14 @@ public class AppiumControlPanelApplication {
         // This will convert "home" to "/WEB-INF/templates/home.html"
         templateResolver.setPrefix("/WEB-INF/templates/");
         templateResolver.setSuffix(".html");
-
-        // Cache is set to true by default. Set to false if you want templates to
-        // be automatically updated when modified.
         templateResolver.setCacheable(false);
 
         this.templateEngine = new TemplateEngine();
         this.templateEngine.setTemplateResolver(templateResolver);
 
-//        this.controllersByURL = new HashMap<String, IGTVGController>();
-//        this.controllersByURL.put("/", new HomeController());
-//        this.controllersByURL.put("/product/list", new ProductListController());
-//        this.controllersByURL.put("/product/comments", new ProductCommentsController());
-//        this.controllersByURL.put("/order/list", new OrderListController());
-//        this.controllersByURL.put("/order/details", new OrderDetailsController());
-//        this.controllersByURL.put("/subscribe", new SubscribeController());
-//        this.controllersByURL.put("/userprofile", new UserProfileController());
+        this.controllersByURL = new HashMap<String, ControlPanelController>();
+        this.controllersByURL.put("/", new HomeController());
+        this.controllersByURL.put("/sessions/doDelete", new SessionStateController());
 
     }
 
@@ -60,16 +61,19 @@ public class AppiumControlPanelApplication {
     private static String getRequestPath(final HttpServletRequest request) {
 
         String requestURI = request.getRequestURI();
-        final String contextPath = request.getContextPath();
+        String trimmedURI = requestURI.replace(SERVLET_BASE_PATH, "");
+        String relativeURI = trimmedURI.startsWith("/")? trimmedURI: "/"+trimmedURI;
+        String result;
 
-        final int fragmentIndex = requestURI.indexOf(';');
+        final int fragmentIndex = trimmedURI.indexOf('?');
         if (fragmentIndex != -1) {
-            requestURI = requestURI.substring(0, fragmentIndex);
+            result = trimmedURI.substring(0, fragmentIndex);
+        }else{
+          result = relativeURI;
         }
+        return result;
 
-        if (requestURI.startsWith(contextPath)) {
-            return requestURI.substring(contextPath.length());
-        }
-        return requestURI;
     }
+
+
 }

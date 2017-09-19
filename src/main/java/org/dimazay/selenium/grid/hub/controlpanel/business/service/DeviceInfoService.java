@@ -16,6 +16,7 @@ import java.util.Map;
 public class DeviceInfoService {
 
     private static final String DEVICE_NAME_CAPABILITY = "deviceName";
+    private static final String SESSION_BEING_CREATED_MSG = "Session is being created";
     private final Registry registry;
 
     public DeviceInfoService(Registry registry) {
@@ -36,15 +37,26 @@ public class DeviceInfoService {
                 deviceInfo.setName(deviceName);
 
                 deviceInfo.setBusy(!isTestSlotFree(testSlot));
+
                 if(!isTestSlotFree(testSlot)){
-                    ExternalSessionKey key = testSlot.getSession().getExternalKey();
-                    deviceInfo.setSessionId(key.getKey());
+                    TestSession testSession = testSlot.getSession();
+                    deviceInfo.setSessionId(getSessionState(testSession));
+                    deviceInfo.setSessionCreated(!getSessionState(testSession).equals(SESSION_BEING_CREATED_MSG));
                 }
+
                 listOfAllDevices.add(deviceInfo);
             }
         }
 
         return listOfAllDevices;
+    }
+
+    private String getSessionState( TestSession testSession) {
+        String result = SESSION_BEING_CREATED_MSG;
+                    if(testSession.getExternalKey() != null) {
+                result = testSession.getExternalKey().getKey();
+            }
+        return result;
     }
 
 

@@ -10,6 +10,19 @@
   box-sizing: border-box;
 }
 /* -- Demo style ------------------------------- */
+.table tr>td:nth-last-of-type(1){
+        width:60px;
+}
+
+span.icono-close{
+    color:red !imporant;
+}
+
+.icono-close:hover {
+    color:red;
+}
+
+
 html,
 body {
   position: relative;
@@ -597,4 +610,21 @@ body {
   .table-responsive-vertical .table-hover.table-mc-deep-orange > tbody > tr > td:hover {
     background-color: #ffccbc;
   }
+}
+
+ .btn {
+  color: #e04f11;
+  background: rgba(0,0,0,0);
+  border: solid 2px #e04f11;
+  padding: 5px;
+}
+.btn:hover,
+.btn.hover {
+  border-color: #d1180e;
+  color: #d1180e;
+}
+.btn:active,
+.btn.active {
+  border-color: #27496d;
+  color: #27496d;
 }

@@ -1,5 +1,7 @@
 package org.dimazay.selenium.grid.hub.controlpanel.business.models;
 
+import org.openqa.grid.internal.utils.DefaultCapabilityMatcher;
+
 /**
  * Created by Dmytro_Zaitsev on 8/9/2017.
  */
@@ -8,6 +10,7 @@ public class DeviceInfo {
     private String browserName;
     private boolean isBusy;
     private String sessionId;
+    private boolean isSessionCreated;
 
     public String getName() {
         return name;
@@ -40,4 +43,14 @@ public class DeviceInfo {
     public void setBrowserName(String browserName) {
         this.browserName = browserName;
     }
+
+    public boolean isSessionCreated() {
+        return isSessionCreated;
+    }
+
+    public void setSessionCreated(boolean sessionCreated) {
+        isSessionCreated = sessionCreated;
+    }
+
+
 }
