@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Appium Grid control panel</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" media="all" href="../../css/appium.css"
+          th:href="@{/grid/resources/css/appium.css}"/>
+    <script th:src="@{/grid/resources/js/script.js}"></script>
+</head>
+
+<body>
+<div id="demo">
+    <h1>List of devices connected to appium grid</h1>
+    <div class="table-responsive-vertical shadow-z-1">
+        <table id="table" class="table table-hover table-bordered table-striped table-mc-light-blue" cellspacing='0'>
+            <thead>
+            <tr>
+                <th>Device Name</th>
+                <th>Browser Type</th>
+                <th>State</th>
+                <th>Session id</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="device : ${deviceList}">
+                <td data-title="Device Name" th:text="${device.name}">Nexus6</td>
+                <td data-title="Browser Type" th:text="${device.browserName}">AndroidPhone</td>
+                <td data-title="State" th:text="${device.isBusy?'Busy':'Idle'}">True</td>
+                <td data-title="Session id" th:text="${device.sessionId}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+
+</html>
+
+
+<!--<body>-->
+<!--<div id="demo">-->
+<!--<h1>List of devices connected to appium grid</h1>-->
+<!--<div class="table-responsive-vertical shadow-z-1">-->
+<!--<table id="table" class="table table-hover table-bordered table-striped table-mc-light-blue" cellspacing='0'>-->
+<!--<thead>-->
+<!--<tr>-->
+<!--<th>Device Name</th>-->
+<!--<th>Browser Type</th>-->
+<!--<th>State</th>-->
+<!--<th>Session id</th>-->
+<!--</tr>-->
+<!--</thead>-->
+<!--<tbody>-->
+<!--<tr th:each="device : ${deviceList}">-->
+<!--<td data-title="Device Name" th:text="${device.name}">Nexus6</td>-->
+<!--<td data-title="Browser Type" th:text="${device.browserName}">AndroidPhone</td>-->
+<!--<td data-title="State" th:text="${device.isBusy}">True</td>-->
+<!--<td data-title="Session id"  th:text="${device.sessionId}"></td>-->
+<!--</tr>-->
+<!--</tbody>-->
+<!--</table>-->
+<!--</div>-->
+<!--</div>-->
+<!--</body>-->
+
+<!--</html>-->
